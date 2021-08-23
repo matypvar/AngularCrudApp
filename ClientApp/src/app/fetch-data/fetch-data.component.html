@@ -1,0 +1,81 @@
+<p *ngIf="!employees"><em>Wczytywanie...</em></p>
+
+
+<p>
+  <button id="addFieldValue" (click)="addFieldValue()" class="btn info">Dodaj</button>
+  <input type="text" [(ngModel)]="searchVal" (ngModelChange)='checkSearchVal()' placeholder="Wyszukaj&hellip;" class="input" style="margin-left:10px;">
+</p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="employees">
+  <thead>
+    <tr>
+      <th (click)="sort('idEmployee')">Id</th>
+      <th (click)="sort('name')">Imię</th>
+      <th (click)="sort('surname')">Nazwisko</th>
+      <th (click)="sort('birthDate')">Data urodzenia</th>
+      <th (click)="sort('sex')">Płeć</th>
+      <th (click)="sort('city')">Miejscowość</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+      </td>
+      <td>
+        <input type="text" [(ngModel)]="searchNameVal" (ngModelChange)='checkFilterVal()' placeholder="Filtruj&hellip;" class="input">
+      </td>
+      <td>
+        <input type="text" [(ngModel)]="searchSurnameVal" (ngModelChange)='checkFilterVal()' placeholder="Filtruj&hellip;" class="input">
+      </td>
+      <td>
+        <input type="date" [(ngModel)]="searchBirthDateVal" (ngModelChange)='checkFilterVal()' class="input" />
+      </td>
+      <td>
+        <select [(ngModel)]="searchSexVal" (ngModelChange)='checkFilterVal()' class="input">
+          <option *ngFor="let item of sex" value="{{item.id}}" class="input">{{item.value}}</option>
+        </select>
+      </td>
+      <td>
+        <input type="text" [(ngModel)]="searchCityVal" (ngModelChange)='checkFilterVal()' placeholder="Filtruj&hellip;" class="input">
+      </td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr *ngFor="let employee of employees">
+      <ng-container *ngIf="enableEditIndex != employee.idEmployee">
+        <td><input value="{{ employee.idEmployee }}" class="input" style="width:70px;" disabled="disabled"></td>
+        <td><input value="{{ employee.name }}" class="input" disabled="disabled"></td>
+        <td><input value="{{ employee.surname }}" class="input" disabled="disabled"></td>
+        <td><input type="date" value="{{employee.birthDate.substring(0, 10)}}" disabled="disabled" class="input" /></td>
+        <td>
+          <select [value]="employee.sex" disabled="disabled" class="input">
+            <option *ngFor="let item of sex" value="{{item.id}}" class="input">{{item.value}}</option>
+          </select>
+        </td>
+        <td><input value="{{ employee.city }}" class="input" disabled="disabled"></td>
+        <td *ngIf="enableEditIndex != employee.idEmployee">
+          <button type="button" (click)="switchEditMode(employee)" class="btn info">Edytuj</button>
+        </td>
+        <td><button id="delete" (click)="deleteRow(employee.idEmployee)" class="btn danger">Usuń</button></td>
+      </ng-container>
+      <ng-container *ngIf="enableEditIndex == employee.idEmployee">
+        <td>{{ employee.idEmployee }}</td>
+        <td><input [(ngModel)]="employee.name" class="input-edit" /></td>
+        <td><input [(ngModel)]="employee.surname" class="input-edit" /></td>
+        <td><input type="date" [(ngModel)]="employee.birthDate" class="input-edit" /></td>
+        <td>
+          <select [(ngModel)]="employee.sex" class="input-edit">
+            <option *ngFor="let item of sex" value="{{item.id}}" class="input-edit">{{item.value}}</option>
+          </select>
+        </td>
+        <td><input [(ngModel)]="employee.city" class="input-edit" /></td>
+        <td *ngIf="!newRow"><button (click)="save(employee)" class="btn success">Zapisz</button></td>
+        <td *ngIf="!newRow"><button (click)="cancelEdit(this, employee.idEmployee)" class="btn warning">Anuluj</button></td>
+        <td *ngIf="newRow"><button (click)="add(employee)" class="btn success">Zapisz</button></td>
+        <td *ngIf="newRow"><button (click)="cancelAdd()" class="btn warning">Anuluj</button></td>
+      </ng-container>
+    </tr>
+  </tbody>
+</table>
